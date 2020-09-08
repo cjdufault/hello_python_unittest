@@ -20,7 +20,7 @@ class ClassList:
         # raise an exception - StudentError - if max_students is zero or negative. 
         # Write test to confirm.
         if max_students <= 0:
-            raise StudentError
+            raise StudentError('Max number of students must be greater than zero')
 
 
     def add_student(self, student):
