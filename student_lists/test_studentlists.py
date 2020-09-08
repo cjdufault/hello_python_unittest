@@ -11,9 +11,9 @@ Practice using
 '''
 
 from studentlists import ClassList, StudentError
-from unittest import TestCase
+import unittest
 
-class TestStudentLists(TestCase):
+class TestStudentLists(unittest.TestCase):
 
     def test_add_student_check_student_in_list(self):
         test_class = ClassList(2)
@@ -32,7 +32,7 @@ class TestStudentLists(TestCase):
             test_class.add_student('Test Student')
 
 
-    ## TODO write a test that adds and removes a student, 
+    ## write a test that adds and removes a student, 
     # and asserts the student is removed. Use assertNotIn
     def test_add_remove_student_ensure_removed(self):
         test_class = ClassList(2)
@@ -41,13 +41,22 @@ class TestStudentLists(TestCase):
         self.assertNotIn('Test Student', test_class.class_list)
 
 
-    ## TODO write a test that adds some example students, 
+    ## write a test that adds some example students, 
     # then removes a student not in the list, and asserts a StudentError is raised
+    def test_remove_nonexistent_student(self):
+        test_class = ClassList(3)
+        test_class.add_student('Greg Bear')
+        test_class.add_student('Frank Herbert')
+        with self.assertRaises(StudentError):
+            test_class.remove_student('Ursula K. Le Guin')
+    
 
-
-    ## TODO write a test that removes a student from an 
+    ## write a test that removes a student from an 
     # empty list, and asserts a StudentError is raised
-
+    def test_remove_student_from_empty_classlist(self):
+        test_class = ClassList(1)
+        with self.assertRaises(StudentError):
+            test_class.remove_student('Toni Morrison')
 
 
     def test_is_enrolled_when_student_present(self):
@@ -63,9 +72,14 @@ class TestStudentLists(TestCase):
         self.assertFalse(test_class.is_enrolled('Snoop Dogg'))
 
 
-    ## TODO write a test that adds some example students to a test class,
+    ## write a test that adds some example students to a test class,
     ## then, call is_enrolled for a student who is not enrolled. 
     # Use assertFalse to verify is_enrolled returns False.
+    def test_is_enrolled_when_student_not_enrolled(self):
+        test_class = ClassList(3)
+        test_class.add_student('Lemony Snickett')
+        test_class.add_student('Roger Daniels')
+        self.assertFalse(test_class.is_enrolled('Shel Silverstein'))
 
 
     def test_string_with_students_enrolled(self):
@@ -96,18 +110,42 @@ class TestStudentLists(TestCase):
 
 
   
-    ## TODO write a test for index_of_student when the class_list list is empty.  
+    ## write a test for index_of_student when the class_list list is empty.  
     # Assert index_of_student returns None for a student if the list is empty. 
     # use assertIsNone.
+    def test_index_of_student_empty_classlist(self):
+        test_class = ClassList(1)
+        index = test_class.index_of_student('Octavia E. Butler')
+        self.assertIsNone(index)
  
- 
-    ## TODO write another test for index_of_student. In the case when the 
+    ## write another test for index_of_student. In the case when the 
     # class_list is not empty but has some students.
     # assert that searching for a student name that is not in the list, returns None.
-
+    def test_index_of_student_with_unenrolled_student(self):
+        test_class = ClassList(2)
+        test_class.add_student('David Levithan')
+        index = test_class.index_of_student('William Shakespeare')
+        self.assertIsNone(index)
    
-    ## TODO write a test for your new is_class_full method when the class is full. 
+    ## write a test for your new is_class_full method when the class is full. 
     # use assertTrue.
+    def test_is_class_full_with_full_class(self):
+        test_class = ClassList(1)
+        test_class.add_student('Kevin Kwan')
+        class_full = test_class.is_class_full(test_class)
+        self.assertTrue(class_full)
     
-    ## TODO write a test for your new is_class_full method for when is empty, 
+    ## write a test for your new is_class_full method for when is empty, 
     # and when it is not full. Use assertFalse.
+    def test_is_class_full_with_empty_class(self):
+        test_class = ClassList(1)
+        class_full = test_class.is_class_full(test_class)
+        self.assertFalse(class_full)
+        
+    def test_classlist_init_with_negative_max_size(self):
+        with self.assertRaises(StudentError):
+            ClassList(-1)
+    
+
+if __name__ == '__main__':
+    unittest.main()
